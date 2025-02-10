@@ -27,19 +27,71 @@ function operate(operator, a, b) {
     }
 }
 
-screenTop = document.querySelector(".screenTop");
-screenBottom = document.querySelector(".screenBottom");
+function calculateMemory(memory) {
+    let result = memory[0];
+    for (let i = 1; i < memory.length; i++) {
+        if (memory[i] === "+") {
+            result = operate("+", result, memory[i + 1]);
+        } else if (memory[i] === "-") {
+            result = operate("-", result, memory[i + 1]);
+        } else if (memory[i] === "x") {
+            result = operate("*", result, memory[i + 1]);
+        } else if (memory[i] === "/") {
+            result = operate("/", result, memory[i + 1]);
+        }
+    }
+    return result;
+}
+
+function clearScreen() {
+    screenTop.textContent = "";
+    screenBottom.textContent = "";
+}
+
+function checkOperator(lastScreenBottom, button) {
+    if ((lastScreenBottom === "+" || lastScreenBottom === "-" || lastScreenBottom === "x" || lastScreenBottom === "/")
+        &&
+        (button === "+" || button === "-" || button === "x" || button === "/")) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+let screenTop = document.querySelector(".screenTop");
+let screenBottom = document.querySelector(".screenBottom");
+let memory = [];
+let temporaryMemory = [];
 
 document.querySelectorAll("button").forEach((button) => {
     button.addEventListener("click", () => {
         if (button.textContent === "=") {
-
-           screenTop.textContent = screenBottom.textContent;
+            number = parseFloat(temporaryMemory.join(""));
+            memory.push(number);
+            temporaryMemory = [];
+            screenTop.textContent = screenBottom.textContent;
+            screenBottom.textContent = calculateMemory(memory)
         } else if (button.textContent === "C") {
-            screenTop.textContent = "";
-            screenBottom.textContent = "";
+            clearScreen();
+            memory = [];
+            temporaryMemory = [];
+        } else if (checkOperator(screenBottom.textContent.slice(-1), button.textContent)) {
+            screenBottom.textContent = screenBottom.textContent.slice(0, -1) + button.textContent;
+            memory.pop();
+            memory.push(button.textContent);
         } else {
             screenBottom.textContent += button.textContent
+            if (button.textContent === "+" || button.textContent === "-" || button.textContent === "x" || button.textContent === "/") {
+                number = parseFloat(temporaryMemory.join(""));
+                memory.push(number);
+                temporaryMemory = [];
+                memory.push(button.textContent)
+            } else {
+                temporaryMemory.push(button.textContent)
+            }
         }
+        console.log("Temporary Memory: " + temporaryMemory);
+        console.log("Memory: " + memory);
     });
 });
