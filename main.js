@@ -27,7 +27,7 @@ function operate(operator, a, b) {
     }
 }
 
-function calculateMemory(memory) {
+function calculateMemory(memory) {;
     let result = memory[0];
     for (let i = 1; i < memory.length; i++) {
         if (memory[i] === "+") {
@@ -67,8 +67,12 @@ let temporaryMemory = [];
 document.querySelectorAll("button").forEach((button) => {
     button.addEventListener("click", () => {
         if (button.textContent === "=") {
-            number = parseFloat(temporaryMemory.join(""));
-            memory.push(number);
+            if (temporaryMemory.length != 0){
+                number = parseFloat(temporaryMemory.join(""));
+                memory.push(number);
+            } else if (memory.at(-1) == "+" || memory.at(-1) == "-" || memory.at(-1) == "x" || memory.at(-1) == "/") {
+                memory.pop()
+            }
             temporaryMemory = [];
             screenTop.textContent = screenBottom.textContent;
             screenBottom.textContent = calculateMemory(memory)
@@ -82,9 +86,15 @@ document.querySelectorAll("button").forEach((button) => {
             memory.push(button.textContent);
         } else {
             screenBottom.textContent += button.textContent
-            if (button.textContent === "+" || button.textContent === "-" || button.textContent === "x" || button.textContent === "/") {
-                number = parseFloat(temporaryMemory.join(""));
-                memory.push(number);
+            if (memory.length == 0 && temporaryMemory.length == 0 && (button.textContent === "+" || button.textContent === "x" || button.textContent === "/")) {
+                
+            } else if (memory.length == 0 && temporaryMemory.length == 0 && button.textContent === "-") {
+                temporaryMemory.push(button.textContent)
+            } else if ((button.textContent === "+" || button.textContent === "-" || button.textContent === "x" || button.textContent === "/")) {
+                if (temporaryMemory.length != 0){
+                    number = parseFloat(temporaryMemory.join(""));
+                    memory.push(number);
+                }
                 temporaryMemory = [];
                 memory.push(button.textContent)
             } else {
