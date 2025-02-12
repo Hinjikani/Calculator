@@ -73,9 +73,13 @@ document.querySelectorAll("button").forEach((button) => {
             } else if (memory.at(-1) == "+" || memory.at(-1) == "-" || memory.at(-1) == "x" || memory.at(-1) == "/") {
                 memory.pop()
             }
-            temporaryMemory = [];
+            if (memory.length != 0) {
+                screenBottom.textContent = Math.round(calculateMemory(memory) * 1000) / 1000;
+            }
+            temporaryMemory = []
+            memory = []
+            temporaryMemory.push(screenBottom.textContent);
             screenTop.textContent = screenBottom.textContent;
-            screenBottom.textContent = calculateMemory(memory)
         } else if (button.textContent === "C") {
             clearScreen();
             memory = [];
