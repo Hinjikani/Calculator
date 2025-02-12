@@ -39,7 +39,7 @@ function equal() {
     }
     temporaryMemory = []
     memory = []
-    temporaryMemory.push(screenBottom.textContent);
+    temporaryMemory = screenBottom.textContent.toString().split('');
     screenTop.textContent = screenBottom.textContent;
 }
 
@@ -82,6 +82,15 @@ function changeLastOperator(keyButton){
             memory.push(keyButton);
 }
 
+function backspace(){
+    screenBottom.textContent = screenBottom.textContent.slice(0, -1);
+    if (temporaryMemory.length > 0){
+        temporaryMemory.pop()
+    } else {
+        memory.pop()
+    }
+}
+
 function keyboardListener() {
     document.addEventListener('keydown', (event) => {
         console.log("You pressed: " + event.key);
@@ -92,6 +101,8 @@ function keyboardListener() {
             clearScreen()
         } else if (checkOperator(screenBottom.textContent.slice(-1), key)) {
             changeLastOperator(key)
+        } else if (key === "Backspace"){
+            backspace()
         } else if (!isNaN(parseFloat(key)) || key == "x" || key == "*"  || key == "/" || key == "+" || key == "-") {
             screenBottom.textContent += key;
             if (memory.length == 0 && temporaryMemory.length == 0 && (key === "+" || key === "x" || key === "*" || key === "/")) {
@@ -109,6 +120,8 @@ function keyboardListener() {
                 temporaryMemory.push(key)
             }
         }
+        console.log("temporaryMemory", temporaryMemory);
+        console.log("memory", memory);
     });
 }
 
@@ -125,6 +138,8 @@ document.querySelectorAll("button").forEach((button) => {
             clearScreen();
         } else if (checkOperator(screenBottom.textContent.slice(-1), button.textContent)) {
             changeLastOperator(button.textContent)
+        } else if (button.id == "deleteButton" ) {
+            backspace()
         } else {
             screenBottom.textContent += button.textContent
             if (memory.length == 0 && temporaryMemory.length == 0 && (button.textContent === "+" || button.textContent === "x" || button.textContent === "/")) {
@@ -138,7 +153,7 @@ document.querySelectorAll("button").forEach((button) => {
                 }
                 temporaryMemory = [];
                 memory.push(button.textContent)
-            } else {
+            }  else {
                 temporaryMemory.push(button.textContent)
             }
         }
